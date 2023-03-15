@@ -1,0 +1,28 @@
+version: "3.8"
+services:
+  postgres-exchange:
+    container_name: postgres-exchange
+    image: postgres
+    ports:
+      - "5554:5432"
+    networks:
+      - exchange
+    environment:
+      POSTGRES_DB: exchangeDB
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+  pgadmin:
+    networks:
+      - exchange
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: password
+    ports:
+      - "5050:80"
+networks:
+    exchange:
+      name: exchange_network
+      driver: bridge

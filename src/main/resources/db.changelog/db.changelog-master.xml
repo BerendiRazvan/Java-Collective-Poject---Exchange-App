@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.9.xsd">
+
+  <changeSet author="anton.claudia" id="000">
+    <comment>Create sequence for generating surrogate keys for item.</comment>
+    <createSequence sequenceName="ITEM_ID_SQ" startValue="50"/>
+
+    <comment>Create sequence for generating surrogate keys for donation</comment>
+    <createSequence sequenceName="DONATION_ID_SQ" startValue="50"/>
+
+    <comment>Create sequence for generating surrogate keys for exchange</comment>
+    <createSequence sequenceName="EXCHANGE_ID_SQ" startValue="50"/>
+
+    <comment>Create sequence for generating surrogate keys for item.</comment>
+    <createSequence sequenceName="CUSTOMER_ID_SQ" startValue="50"/>
+  </changeSet>
+
+  <changeSet author="anton.claudia" id="001">
+    <createTable tableName="CUSTOMER">
+      <column name="ID" type="BIGINT">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="USER_PK"/>
+      </column>
+      <column name="USERNAME" type="VARCHAR(255)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="EMAIL" type="VARCHAR(255)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="PASSWORD" type="VARCHAR(255)">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+
+    <createTable tableName="ITEM" remarks="Item details.">
+      <column name="ID" type="BIGINT" remarks="Generated surrogate key.">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="ITEM_PK"/>
+      </column>
+      <column name="TITLE" type="VARCHAR(255)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="DESCRIPTION" type="VARCHAR(255)"/>
+      <column name="CUSTOMER_ID" type="BIGINT">
+        <constraints nullable="false" foreignKeyName="USER_FK"
+          references="CUSTOMER(ID)"/>
+      </column>
+      <column name="SCOPE" type="VARCHAR(255)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="ITEM_STATUS" type="VARCHAR(255)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="CREATION_TIME" type="DATETIME"
+        remarks="Timestamp of the record's creation">
+        <constraints nullable="false"/>
+      </column>
+      <column name="IMAGE" type="VARCHAR(255)">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+
+    <createTable tableName="DONATION">
+      <column name="ID" type="BIGINT" remarks="Generated surrogate key.">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="DONATION_PK"/>
+      </column>
+      <column name="ITEM_ID" type="bigint">
+        <constraints nullable="false" foreignKeyName="DONATION_FK"
+          references="ITEM(ID)"/>
+      </column>
+      <column name="CUSTOMER_ID" type="BIGINT">
+        <constraints nullable="false" foreignKeyName="USER_FK"
+          references="CUSTOMER(ID)"/>
+      </column>
+      <column name="STATUS" type="VARCHAR(255)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="CREATION_TIME" type="DATETIME"
+        remarks="Timestamp of the record's creation">
+        <constraints nullable="false"/>
+      </column>
+      <column name="RECEIVED_CUSTOMER" type="BIGINT">
+        <constraints nullable="false" foreignKeyName="USER_FK2"
+                     references="CUSTOMER(ID)"/>
+      </column>
+    </createTable>
+
+    <createTable tableName="EXCHANGE">
+      <column name="ID" type="BIGINT" remarks="Generated surrogate key.">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="EXCHANGE_PK"/>
+      </column>
+      <column name="LISTED_ITEM_ID" type="bigint">
+        <constraints nullable="false" foreignKeyName="EXCHANGE_LISTED_ITEM_FK"
+          references="ITEM(ID)"/>
+      </column>
+      <column name="OFFERED_ITEM_ID" type="bigint">
+        <constraints nullable="false" foreignKeyName="EXCHANGE_OFFERED_ITEM_FK"
+          references="ITEM(ID)"/>
+      </column>
+      <column name="STATUS" type="VARCHAR(255)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="CREATION_TIME" type="DATETIME"
+        remarks="Timestamp of the record's creation">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+
+  <changeSet author="claudia.anton" id="002">
+    <loadData file="includes/data-customer.csv" relativeToChangelogFile="true"
+      tableName="CUSTOMER"/>
+
+    <loadData file="includes/data-item.csv" relativeToChangelogFile="true"
+      tableName="ITEM"/>
+
+    <loadData file="includes/data-exchange.csv" relativeToChangelogFile="true"
+      tableName="EXCHANGE"/>
+    <loadData file="includes/data-donation.csv" relativeToChangelogFile="true"
+      tableName="DONATION"/>
+
+  </changeSet>
+
+</databaseChangeLog>
